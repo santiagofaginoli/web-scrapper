@@ -51,3 +51,4 @@ def TiendaMiapriceScrap():
             print('error') 
             print(response.status_code)
 TiendaMiapriceScrap()
+#polla
