@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-
+from collections import Counter
 
 # - - - - - - Scrapers de precios - - - - - -
 def MercadoLibrepriceScrap():
@@ -90,4 +90,80 @@ def wordSearch():
     else: 
             print('error') 
             print(response.status_code)    
-wordSearch()
+
+#- - - - - - Data de datos Generales- - - - - - 
+def generalDataScrap():
+    url = "https://tiendamia.com/ar/tiendamia-en-vivo"
+    
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+    }
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Sacar el título de la página
+        titulo = soup.title.text
+        print("Título:", titulo)
+
+        # Sacar la descripción de la página
+        descripcion = soup.find("meta", attrs={"name": "description"})
+        if descripcion:
+            print("Descripción:", descripcion.get("content"))
+
+        # Sacar las palabras clave de la página
+        keywords = soup.find("meta", attrs={"name": "keywords"})
+        if keywords:
+            print("Palabras clave:", keywords.get("content"))
+
+        # Sacar el contenido del cuerpo de la página
+        cuerpo = soup.body.text
+        """ print("Contenido del cuerpo:", cuerpo)  """
+    else:
+        print("Error:", response.status_code)
+
+#- - - - - - Analisis por etiquetas y clases - - - - - - 
+def tagAnalyzer():
+    url = "https://tiendamia.com/ar/tiendamia-en-vivo"
+    
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+    }
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Encontrar todas las etiquetas
+        etiquetas = [tag.name for tag in soup.find_all(True)]
+
+        # Contar la cantidad de cada etiqueta
+        contador_etiquetas = Counter(etiquetas)
+
+        # Imprimir las etiquetas y sus apariciones
+        print("Etiquetas y sus apariciones:")
+        for etiqueta, cantidad in contador_etiquetas.most_common():
+            print(f"{etiqueta}: {cantidad}")
+
+        # Encontrar las clases más comunes
+        clases = [clase for tag in soup.find_all(class_=True) for clase in tag.get('class')]
+        contador_clases = Counter(clases)
+
+        # Imprimir las clases más comunes
+        print("\nClases más comunes:")
+        for clase, cantidad in contador_clases.most_common(10):
+            print(f"{clase}: {cantidad} apariciones")
+
+    else:
+        print("Error:", response.status_code)
+   
+#LISTA DE CAMBIOS PENDIENTES:
+
+#1- Estandarizar una URL ingresada por el usuario al inicio del programa para que todas las opciones del menu y el mismo informe se creen en base a esa URL
+#2- Crear el menu, incluyendo la opcion de guardar informe
+#3- Darle la eleccion al usuario sobre que info guardar de cada opcion (quiza usa la opcion del general data scrap pero no quiere el cuerpo, solo titulo y descripcion en el informe, que eso sea posible)
+#4- Añadir las lineas con las que se guardara la informacion y la variable independiente donde se guardara toda la info que ira en el informe final
+#5- A la hora de guardar el informe, el usuario debera poder elegir el formato (TXT plano o XLSX, que son de excel podrian ser buenos formatos a elegir) que tendra el archivo que contendra toda la data de la variable independiente
+#6- Es necesario revisar si faltan limites o integrar avisos de errores
+
