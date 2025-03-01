@@ -1,11 +1,11 @@
 from bs4 import BeautifulSoup
 import requests
+import re
 from collections import Counter
 
 # - - - - - - Scrapers de precios - - - - - -
 def MercadoLibrepriceScrap():
-    url = "https://www.mercadolibre.com.ar/ofertas#nav-header"
-
+    url= "https://www.mercadolibre.com.ar/ofertas#nav-header"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
     }
@@ -29,9 +29,9 @@ def MercadoLibrepriceScrap():
         
         
        #-----------------------------TIENDA MIA------------------------------------------------- 
-def TiendaMiapriceScrap():
-        url = "https://tiendamia.com/ar/tiendamia-en-vivo"
 
+def TiendaMiapriceScrap():
+        url ="https://tiendamia.com/ar/tiendamia-en-vivo"
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
         }
@@ -54,8 +54,8 @@ def TiendaMiapriceScrap():
             print(response.status_code)
 
 #- - - - - - Busqueda por palabras - - - - - - 
-def wordSearch():
-    url = "https://tiendamia.com/ar/tiendamia-en-vivo"
+def wordSearch(url):
+    
 
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
@@ -92,8 +92,7 @@ def wordSearch():
             print(response.status_code)    
 
 #- - - - - - Data de datos Generales- - - - - - 
-def generalDataScrap():
-    url = "https://tiendamia.com/ar/tiendamia-en-vivo"
+def generalDataScrap(url):
     
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
@@ -124,8 +123,7 @@ def generalDataScrap():
         print("Error:", response.status_code)
 
 #- - - - - - Analisis por etiquetas y clases - - - - - - 
-def tagAnalyzer():
-    url = "https://tiendamia.com/ar/tiendamia-en-vivo"
+def tagAnalyzer(url):
     
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
@@ -157,13 +155,72 @@ def tagAnalyzer():
 
     else:
         print("Error:", response.status_code)
+
+def validar_url(url):
+    patron = r"^https?://[^\s]+"
+    return bool(re.match(patron, url))
+
+
+# ----------------------------obtencion de URL target-----------------------------------
+""" url=input("porfavor, ingrese la URL a analizar: ") """
+
+#-----------------------------MENU PRINCIPAL--------------------------------------------
+
+print("Bienvenido al programa de scraping y análisis de URLs")
+
+while True:
+    print("¿Qué desea hacer?")
+    print("1. Scraping de precios")
+    print("2. Análisis de URL")
+    print("3. Salir")
+
+    opcion = input("Ingrese su opción: ")
+
+    if opcion == "1":
+        print("Scraping de precios")
+        print("1. Tienda Mia")
+        print("2. Mercado Libre")
+        opcion_scraping = input("Ingrese su opción: ")
+        if opcion_scraping == "1":
+            TiendaMiapriceScrap()
+        elif opcion_scraping == "2":
+            MercadoLibrepriceScrap()
+        else:
+            print("Opción inválida")
+    elif opcion == "2":
+        url = input("Ingrese la URL que desea analizar: ")
+        validar_url(url)
+        if validar_url(url):
+         print("La URL es válida")
+        else:
+         print("La URL no es válida")
+         break
+        print("Análisis de URL")
+        print("1. Búsqueda por palabras")
+        print("2. Análisis de datos generales")
+        print("3. Análisis de etiquetas y clases")
+        print ("4. Salir")
+        opcion_analisis = input("Ingrese su opción: ")
+        if opcion_analisis == "1":
+            wordSearch(url)
+        elif opcion_analisis == "2":
+            generalDataScrap(url)
+        elif opcion_analisis == "3":
+            tagAnalyzer(url)
+        elif opcion_analisis == "4":
+            break    
+        else:
+            print("Opción inválida")
+    elif opcion == "3":
+        break
+    else:
+        print("Opción inválida")
    
 #LISTA DE CAMBIOS PENDIENTES:
 
-#1- Estandarizar una URL ingresada por el usuario al inicio del programa para que todas las opciones del menu y el mismo informe se creen en base a esa URL
-#2- Crear el menu, incluyendo la opcion de guardar informe
+#1- Estandarizar una URL ingresada por el usuario al inicio del programa para que todas las opciones del menu y el mismo informe se creen en base a esa URL>>>> LISTO 
+#2- Crear el menu, incluyendo la opcion de guardar informe >>>>LISTO
 #3- Darle la eleccion al usuario sobre que info guardar de cada opcion (quiza usa la opcion del general data scrap pero no quiere el cuerpo, solo titulo y descripcion en el informe, que eso sea posible)
 #4- Añadir las lineas con las que se guardara la informacion y la variable independiente donde se guardara toda la info que ira en el informe final
 #5- A la hora de guardar el informe, el usuario debera poder elegir el formato (TXT plano o XLSX, que son de excel podrian ser buenos formatos a elegir) que tendra el archivo que contendra toda la data de la variable independiente
 #6- Es necesario revisar si faltan limites o integrar avisos de errores
-
