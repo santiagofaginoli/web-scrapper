@@ -44,6 +44,7 @@ def TiendaMiapriceScrap():
 
     if response.status_code == 200:
         TMPriceScrapData={}  
+        TMPriceScrapData={}  
         soup = BeautifulSoup(response.text, 'html.parser')
 
         productos = soup.find_all('div', class_='prod-fijo-left')
@@ -54,6 +55,7 @@ def TiendaMiapriceScrap():
             if nombre is None or precio is None:
                 continue
             print(f'Producto: {nombre.text}\nPrecio: {precio.text}')
+            TMPriceScrapData[nombre.text] = precio.text
             TMPriceScrapData[nombre.text] = precio.text
     else:
         print('error')
@@ -242,4 +244,5 @@ while True:
 # 5- A la hora de guardar el informe, el usuario debera poder elegir el formato (TXT plano o XLSX, que son de excel podrian ser buenos formatos a elegir) que tendra el archivo que contendra toda la data de la variable independiente
 # 6- Es necesario revisar si faltan limites o integrar avisos de errores 
         #---url>>>LISTO
+        
         
