@@ -15,9 +15,8 @@ def MercadoLibrepriceScrap():
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
-        MLPriceScrapData=[]   
+        MLPriceScrapData={}  
         soup = BeautifulSoup(response.text, 'html.parser')
-
         productos = soup.find_all(
             'div', class_='andes-card poly-card poly-card--grid-card andes-card--flat andes-card--padding-0 andes-card--animated')
         for producto in productos:
@@ -27,10 +26,7 @@ def MercadoLibrepriceScrap():
             if nombre is None or precio is None:
                 continue
             print(f'Producto: {nombre.text}\nPrecio: {precio.text}')
-            MLPriceScrapData.append(nombre.text)
-            MLPriceScrapData.append(precio.text)
-
-        print(MLPriceScrapData)    
+            MLPriceScrapData[nombre.text] = precio.text
     else:
         print('error')
         print(response.status_code)
@@ -47,6 +43,7 @@ def TiendaMiapriceScrap():
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
+        TMPriceScrapData={}  
         soup = BeautifulSoup(response.text, 'html.parser')
 
         productos = soup.find_all('div', class_='prod-fijo-left')
@@ -57,6 +54,7 @@ def TiendaMiapriceScrap():
             if nombre is None or precio is None:
                 continue
             print(f'Producto: {nombre.text}\nPrecio: {precio.text}')
+            TMPriceScrapData[nombre.text] = precio.text
     else:
         print('error')
         print(response.status_code)
